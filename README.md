@@ -17,7 +17,7 @@ Add bumbler to your Gemfile if you want to use `bundle exec`
 ### Step 2:
 Add the following to your .profile, .bash_profile, .zshrc, .wtfrc or whatever shell config you use
 
-    export RUBYOPT=-rbumbler
+    export RUBYOPT=-rbumbler/go
 
 ### Step 3:
 Restart your terminal
