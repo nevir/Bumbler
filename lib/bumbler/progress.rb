@@ -7,6 +7,10 @@ module Bumbler
     @registry = Hash.new { |h,k| h[k] = {} }
     
     class << self
+      def registry
+        @registry
+      end
+      
       def register_item(type, name)
         # Build a blank key for the item
         unless @registry[type][name]
