@@ -7,6 +7,13 @@ module Bumbler
       return @require_map[path]
     end
     
+    def self.require_started(path)
+      gem_name = self.gem_for_require(path)
+      return unless gem_name
+      
+      Bumbler::Progress.item_started(:bundler, gem_name)
+    end
+    
     def self.require_finished(path, load_time)
       self.read_bundler_environment if @gem_state.nil?
       

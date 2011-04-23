@@ -11,19 +11,26 @@ module Bumbler
       self.registry[type][name] = {}
     end
     
+    def self.item_started(type, name)
+      @curr_item = {:type => type, :name => name}
+      
+      self.render_progress
+    end
+    
     def self.item_finished(type, name, time)
       self.registry[type][name] = {:time => time}
       
       @loaded_items ||= 0
       @loaded_items  += 1
       
-      @prev_item = {:name => name, :time => time}
+      @prev_item = {:type => type, :name => name, :time => time}
+      @curr_item = nil if @curr_item && @curr_item[:name] == @prev_item[:name] && @curr_item[:type] == @prev_item[:type]
+      
       self.render_progress
     end
     
     def self.start!
-      @loaded_items ||= 0
-      @item_count   ||= 0
+      # No-op for now.
     end
     
   private
@@ -60,6 +67,9 @@ module Bumbler
       print "\r\e[A\r\e[A" if @outputted_once
       @outputted_once = true
       
+      @loaded_items ||= 0
+      @item_count   ||= 0
+      
       # Output components:
       #   [#######################################]
       #   (##/##) <current>...   <prev> (####.##ms)
@@ -67,10 +77,10 @@ module Bumbler
       # Skip the current if there isn't enough room
       count   = '(%s/%d) ' % [@loaded_items.to_s.rjust(@item_count.to_s.size), @item_count]
       current = @curr_item ? "#{@curr_item[:name]}... " : ''
-      prev    = @prev_item ? '%s (%sms)' % [@prev_item[:name], ('%.2f' % @prev_item[:time]).rjust(9)] : ''
+      prev    = @prev_item ? '%s (%sms)' % [@prev_item[:name], ('%.2f' % @prev_item[:time]).rjust(7)] : ''
       
       # Align the bottom row
-      space_for_current = width - (count.length + prev)
+      space_for_current = width - (count.length + prev.length)
       
       # Render the progress
       puts self.bar(width)

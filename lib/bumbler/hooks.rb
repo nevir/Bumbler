@@ -54,6 +54,11 @@ module Bumbler
       gem_name = Bumbler::Bundler.gem_for_require(path)
       return yield unless gem_name
       
+      # Track load starts
+      @previous_gems ||= {}
+      Bumbler::Bundler.require_started(path) unless @previous_gems[gem_name]
+      @previous_gems[gem_name] = true
+      
       # Let's time them
       start = Time.now.to_f
       result = yield
