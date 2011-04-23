@@ -48,7 +48,7 @@ module Bumbler
       def bar(width)
         inner_size = width - 2
         
-        fill_size = ((@loaded_items.to_f / @item_count.to_f) * inner_size).to_i
+        fill_size = [((@loaded_items.to_f / @item_count.to_f) * inner_size).to_i, inner_size].min
         fill  = '#' * fill_size
         empty = ' ' * (inner_size - fill_size)
         
