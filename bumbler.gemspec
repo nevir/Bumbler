@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
-$:.unshift File.expand_path("../lib", __FILE__)
-require "bumbler/version"
+require File.expand_path("../lib/bumbler.rb", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "bumbler"

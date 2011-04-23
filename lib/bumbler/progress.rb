@@ -17,8 +17,8 @@ module Bumbler
       @loaded_items ||= 0
       @loaded_items  += 1
       
-      time_str = ('%.2fms' % time).rjust(9)
-      self.render_progress('%s loaded %s ' % [time_str, name])
+      @prev_item = {:name => name, :time => time}
+      self.render_progress
     end
     
     def self.start!
@@ -36,8 +36,8 @@ module Bumbler
       `tput cols`.to_i || 80
     end
     
-    def self.bar
-      inner_size = self.tty_width - 2
+    def self.bar(width)
+      inner_size = width - 2
       
       fill_size = ((@loaded_items.to_f / @item_count.to_f) * inner_size).to_i
       fill  = '#' * fill_size
@@ -46,15 +46,40 @@ module Bumbler
       return "[#{fill}#{empty}]"
     end
     
-    def self.render_progress(message)
-      if $stdout.tty?
-        print "\r\e[A\r\e[K\r\e[A" if @outputted_once
-        @outputted_once = true
-        
-        puts self.bar
+    def self.render_progress
+      unless $stdout.tty?
+        puts '(%s/%d) %s' % [@loaded_items.to_s.rjust(@item_count.to_s.size), @item_count, message]
+        return
       end
       
-      puts '(%s/%d) %s' % [@loaded_items.to_s.rjust(@item_count.to_s.size), @item_count, message]
+      # Do nothing if we don't have any items to load
+      return if @item_count == 0
+      
+      width = self.tty_width
+      
+      print "\r\e[A\r\e[A" if @outputted_once
+      @outputted_once = true
+      
+      # Output components:
+      #   [#######################################]
+      #   (##/##) <current>...   <prev> (####.##ms)
+      # 
+      # Skip the current if there isn't enough room
+      count   = '(%s/%d) ' % [@loaded_items.to_s.rjust(@item_count.to_s.size), @item_count]
+      current = @curr_item ? "#{@curr_item[:name]}... " : ''
+      prev    = @prev_item ? '%s (%sms)' % [@prev_item[:name], ('%.2f' % @prev_item[:time]).rjust(9)] : ''
+      
+      # Align the bottom row
+      space_for_current = width - (count.length + prev)
+      
+      # Render the progress
+      puts self.bar(width)
+      
+      if space_for_current >= current.length
+        puts count + current + prev.rjust(width - count.length - current.length)
+      else
+        puts count + prev.rjust(width - count.length)
+      end
     end
   end
 end
