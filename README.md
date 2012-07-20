@@ -29,5 +29,7 @@ Run a Bundler-based command, and you should see a spiffy progress bar, such as:
     > rails c
     [#########                                                                     ]
     ( 7/59)  492.04ms loaded data_mapper 
+    > Bumbler::Stats.all_slow_items  #will show you the gems which load the slowest.
+
 
 And then maybe you'll also want to contribute some patches to make your favorite gems load faster.
