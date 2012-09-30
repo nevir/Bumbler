@@ -5,6 +5,9 @@ Use Bumbler to track the load progress of your [Bundler](http://gembundler.com/)
 
 
 ## Using Bumbler
+
+WARNING: Works only with ruby 1.9
+
 ### Step 1:
 
     gem install bumbler
