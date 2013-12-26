@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'bumbler/go'
+require './config/environment'
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib') # bundler kicks us out
+Bumbler::Stats.all_slow_items

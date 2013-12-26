@@ -1,2 +1,2 @@
-require 'bundler'
-Bundler::GemHelper.install_tasks
+require 'bundler/setup'
+require 'bundler/gem_tasks'
