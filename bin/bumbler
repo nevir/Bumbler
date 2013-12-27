@@ -1,5 +1,22 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'optparse'
+require 'bumbler'
+
+OptionParser.new do |parser|
+  parser.banner = <<BANNER
+Bumbler shows how long loading your bundle components take.
+
+Usage:
+    bumbler
+
+Options:
+BANNER
+  parser.on("-h", "--help","Show this.") { puts parser; exit }
+  parser.on('-v', '--version','Show Version'){ puts Bumbler::VERSION; exit}
+end.parse!
+
 require 'bumbler/go'
 require './config/environment'
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib') # bundler kicks us out
