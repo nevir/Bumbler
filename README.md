@@ -44,3 +44,10 @@ Run a Bundler-based command, and you should see a spiffy progress bar, such as:
 
 
 And then maybe you'll also want to contribute some patches to make your favorite gems load faster.
+
+
+License
+-------
+
+Dotum is MIT licensed. [See the accompanying file](MIT-LICENSE.md) for the full
+text.
