@@ -1,18 +1,21 @@
 Bumbler
 =======
 
-Why stare blankly at your terminal window when you can clutter it up with awesome progress bars?
+Why stare blankly at your terminal window when you can clutter it up with
+awesome progress bars?
 
-Use Bumbler to track the load progress of your [Bundler](http://gembundler.com/)-based projects!  Maybe you'll find a slow gem or two.
+Use Bumbler to track the load progress of your
+[Bundler](http://gembundler.com/)-based projects!  Maybe you'll find a slow gem
+or two.
 
-```Bash
+```bash
 gem install bumbler
 ```
 
 Simple
 ------
 
-```Bash
+```bash
 cd rails-project && bumbler
 ```
 
@@ -24,15 +27,16 @@ Detailed usage for non-Rails projects
 
 Add bumbler to your Gemfile if you want to use `bundle exec`
 
-```Ruby
+```ruby
 gem 'bumbler'
 ```
 
 ### Step 2:
 
-Add the following to your .profile, .bash_profile, .zshrc, .wtfrc or whatever shell config you use
+Add the following to your .profile, .bash_profile, .zshrc, .wtfrc or whatever
+shell config you use
 
-```Bash
+```bash
 export RUBYOPT=-rbumbler/go
 ```
 
@@ -53,15 +57,21 @@ Run a Bundler-based command, and you should see a spiffy progress bar, such as:
 > Bumbler::Stats.all_slow_items  #will show you the gems which load the slowest.
 ```
 
-And then maybe you'll also want to contribute some patches to make your favorite gems load faster.
+And then maybe you'll also want to contribute some patches to make your favorite
+gems load faster.
 
 
 Bonus features
 --------------
 
-### Track load-time of Rails initializers (config/initializers/*):
+### Track load-time of Rails initializers
 
-`bumbler --initializers`
+See how slow your app's initializers are (`./config/initializers/*`), as well as
+the initializers for any engines you rely on.
+
+```bash
+bumbler --initializers
+```
 
 
 License
