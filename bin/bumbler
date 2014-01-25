@@ -4,6 +4,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'optparse'
 require 'bumbler'
 
+options = {}
 OptionParser.new do |parser|
   parser.banner = <<BANNER
 Bumbler shows how long loading your bundle components take.
@@ -13,11 +14,20 @@ Usage:
 
 Options:
 BANNER
-  parser.on("-h", "--help","Show this.") { puts parser; exit }
-  parser.on('-v', '--version','Show Version'){ puts Bumbler::VERSION; exit}
+  parser.on("--initializers", "Show load time of initializers") { options[:initializers] = true }
+  parser.on("-h", "--help", "Show this.") { puts parser; exit }
+  parser.on('-v', '--version', 'Show Version'){ puts Bumbler::VERSION; exit}
 end.parse!
 
-require 'bumbler/go'
-require './config/environment'
+
+if options[:initializers]
+  require './config/application'
+  require 'bumbler/track_initializers'
+  require './config/environment'
+else
+  require 'bumbler/go'
+  require './config/environment'
+end
+
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib') # bundler kicks us out
 Bumbler::Stats.all_slow_items
