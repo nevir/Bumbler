@@ -64,6 +64,15 @@ gems load faster.
 Bonus features
 --------------
 
+### Custom threshold
+
+Set the mininum number of miliseconds before something slow is listed. For
+example, to show anything >= 10ms:
+
+```bash
+bumbler -t 10
+```
+
 ### Track load-time of Rails initializers
 
 See how slow your app's initializers are (`./config/initializers/*`), as well as

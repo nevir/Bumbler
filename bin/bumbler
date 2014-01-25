@@ -14,11 +14,13 @@ Usage:
 
 Options:
 BANNER
+  parser.on("-t", "--threshold MILISECONDS", Integer, "Threshold in ms to be listed as slow") { |t| options[:threshold] = t }
   parser.on("--initializers", "Show load time of initializers") { options[:initializers] = true }
   parser.on("-h", "--help", "Show this.") { puts parser; exit }
   parser.on('-v', '--version', 'Show Version'){ puts Bumbler::VERSION; exit}
 end.parse!
 
+Bumbler::Hooks.slow_threshold = options[:threshold] if options[:threshold]
 
 if options[:initializers]
   require './config/application'
