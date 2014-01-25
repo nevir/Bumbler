@@ -44,3 +44,13 @@ Run a Bundler-based command, and you should see a spiffy progress bar, such as:
 
 
 And then maybe you'll also want to contribute some patches to make your favorite gems load faster.
+
+# Bonus features
+
+## Track load-time of initializers (config/initializers/* and engine initializers)
+
+`bumbler --initializers`
+
+## Configure threshold
+
+`bumbler -t 10` -> show everything slower than 10ms

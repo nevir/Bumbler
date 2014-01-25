@@ -30,11 +30,81 @@ describe Bumbler do
       bumbler("bumbler --help").must_include "Bumbler"
     end
 
-    it "prints simple progress without tty" do
-      File.write("Gemfile", "source 'https://rubygems.org'\ngem 'rake'")
-      FileUtils.mkdir_p("config")
-      File.write("config/environment.rb", "require 'bundler/setup'\nrequire 'rake'")
-      bumbler.strip.must_equal "(0/1)  rake\nSlow requires:"
+    describe "with simple gemfile" do
+      def structure
+        File.write("Gemfile", "source 'https://rubygems.org'\ngem 'rake'")
+        FileUtils.mkdir_p("config")
+        File.write("config/environment.rb", "require 'bundler/setup'\nrequire 'rake'")
+      end
+
+      it "prints simple progress without tty" do
+        structure
+        bumbler.strip.must_equal "(0/1)  rake\nSlow requires:"
+      end
+
+      it "shows more with lower threshold" do
+        structure
+        bumbler("-t 0").strip.must_match /^Slow requires:\s+\d+\.\d+\s+rake$/m
+      end
+    end
+
+    describe "with initializers" do
+      it "records initializers" do
+        File.write("Gemfile", "")
+        FileUtils.mkdir_p("config")
+
+        File.write("config/application.rb", <<-RUBY)
+          $offset = 0.0
+          def wait
+            sleep 0.1 + $offset
+            $offset += 0.01
+          end
+
+          module FakeLoad
+            def load(file)
+              wait
+            end
+          end
+
+          module Rails
+            def self.root
+              "/some/root"
+            end
+
+            class Engine
+              include FakeLoad
+            end
+
+            module Initializable
+              class Initializer
+                def initialize(name)
+                  @name = name
+                end
+
+                def run(*args)
+                  wait
+                end
+              end
+            end
+          end
+        RUBY
+
+        File.write("config/environment.rb", <<-RUBY)
+          Rails::Engine.new.load(Rails.root + "/config/initializers/foo.rb")
+          Rails::Engine.new.load(Rails.root + "/config/initializers/bar.rb")
+          Rails::Initializable::Initializer.new(:baz).run(1,2,3)
+          Rails::Initializable::Initializer.new(:bong).run(1,2,3)
+        RUBY
+
+        expected = <<-TEXT.gsub(/^          /, "").strip
+          Slow requires:
+              time  ./config/initializers/foo.rb
+              time  ./config/initializers/bar.rb
+              time  :baz
+              time  :bong
+        TEXT
+        bumbler("--initializers").strip.gsub(/\d+\.\d+/, 'time').must_equal expected
+      end
     end
   end
 end

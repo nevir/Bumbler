@@ -10,7 +10,6 @@ Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.executables  = ['bumbler']
 
   s.add_development_dependency "rake"
-
   s.add_development_dependency "minitest"
   s.add_development_dependency "minitest-rg"
   s.add_development_dependency "minitest-around"
