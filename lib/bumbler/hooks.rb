@@ -1,11 +1,15 @@
 module Bumbler
   module Hooks
-    SLOW_REQUIRE_THRESHOLD = 100.0
+    @slow_threshold = 100.0
     @previous_gems = {}
     @slow_requires = {}
 
     # Everything's a class method (we're a singleton)
     class << self
+      def slow_threshold=(time)
+        @slow_threshold = time
+      end
+
       def slow_requires
         @slow_requires
       end
@@ -78,7 +82,7 @@ module Bumbler
         start = Time.now.to_f
         result = yield
         time = (Time.now.to_f - start) * 1000 # ms
-        @slow_requires[key] = time if time > SLOW_REQUIRE_THRESHOLD
+        @slow_requires[key] = time if time > @slow_threshold
         return time, result
       end
     end
