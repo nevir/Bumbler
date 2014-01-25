@@ -47,6 +47,6 @@ And then maybe you'll also want to contribute some patches to make your favorite
 
 # Bonus features
 
-## Track load-time of initializers (config/initializers/*)
+## Track load-time of initializers (config/initializers/* and engine initializers)
 
 `bumbler --initializers`
