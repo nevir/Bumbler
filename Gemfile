@@ -1,4 +1,3 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in bumbler.gemspec
-gemspec
+gemspec # Specify dependencies in bumbler.gemspec

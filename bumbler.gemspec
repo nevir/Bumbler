@@ -1,4 +1,4 @@
-require File.expand_path('../lib/bumbler/version', __FILE__)
+require './lib/bumbler/version'
 
 Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.authors     = ['Ian MacLeod']
@@ -11,6 +11,7 @@ Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.license      = "MIT"
 
   s.add_development_dependency "rake"
+  s.add_development_dependency "bump"
   s.add_development_dependency "minitest"
   s.add_development_dependency "minitest-rg"
   s.add_development_dependency "minitest-around"
