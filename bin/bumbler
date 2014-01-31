@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+add_load_path = lambda do
+  path = File.join(File.dirname(__FILE__), '..', 'lib')
+  $LOAD_PATH << path unless $LOAD_PATH.include? path
+end
+
+add_load_path.call # in case we execute via ./bin
 
 require 'optparse'
 require 'bumbler'
@@ -24,12 +29,13 @@ Bumbler::Hooks.slow_threshold = options[:threshold] if options[:threshold]
 
 if options[:initializers]
   require './config/application'
+  add_load_path.call # bundler kicks us out
   require 'bumbler/track_initializers'
   require './config/environment'
 else
   require 'bumbler/go'
   require './config/environment'
+  add_load_path.call # bundler kicks us out
 end
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib') # bundler kicks us out
 Bumbler::Stats.all_slow_items
