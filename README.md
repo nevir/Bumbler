@@ -86,5 +86,5 @@ bumbler --initializers
 License
 -------
 
-Dotum is MIT licensed. [See the accompanying file](MIT-LICENSE.md) for the full
+Bumbler is MIT licensed. [See the accompanying file](MIT-LICENSE.md) for the full
 text.
