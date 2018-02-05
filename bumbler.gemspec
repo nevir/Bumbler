@@ -9,6 +9,7 @@ Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.files        = `git ls-files lib bin`.split("\n")
   s.executables  = ['bumbler']
   s.license      = "MIT"
+  s.required_ruby_version = '>= 2.1.0'
 
   s.add_development_dependency "rake"
   s.add_development_dependency "bump"
