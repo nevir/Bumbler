@@ -11,10 +11,10 @@ describe Bumbler do
   around { |test| Dir.mktmpdir { |dir| Dir.chdir(dir) { test.call } } }
 
   it "prints simple progress without tty on ruby project" do
-    File.write("Gemfile", "source 'https://rubygems.org'\ngem 'rake'\ngem 'bumbler', :path => '#{Bundler.root}'")
+    File.write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'\ngem 'bumbler', path: '#{Bundler.root}'")
     File.write("test.rb", "require 'bumbler/go'\nBundler.require")
     result = sh "bundle exec ruby test.rb"
-    result.strip.must_equal "(0/2)  rake\n(1/2)  bumbler"
+    result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
   end
 
   describe "CLI" do
@@ -32,19 +32,19 @@ describe Bumbler do
 
     describe "with simple gemfile" do
       def structure
-        File.write("Gemfile", "source 'https://rubygems.org'\ngem 'rake'")
+        File.write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'")
         FileUtils.mkdir_p("config")
-        File.write("config/environment.rb", "require 'bundler/setup'\nrequire 'rake'")
+        File.write("config/environment.rb", "require 'bundler/setup'\nrequire 'fakegem'")
       end
 
       it "prints simple progress without tty" do
         structure
-        bumbler.strip.must_equal "(0/1)  rake\nSlow requires:"
+        bumbler.strip.must_equal "(0/1)  fakegem\nSlow requires:"
       end
 
       it "shows more with lower threshold" do
         structure
-        bumbler("-t 0").strip.must_match /^Slow requires:\s+\d+\.\d+\s+rake$/m
+        bumbler("-t 0").strip.must_match /^Slow requires:\s+\d+\.\d+\s+fakegem$/m
       end
     end
 

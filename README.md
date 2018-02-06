@@ -83,6 +83,21 @@ bumbler --initializers
 ```
 
 
+Development
+-----------
+
+We don't have any integration tests with rails, so when touch rails code make sure to test it in a real app.
+
+```Ruby
+gem 'bumbler', path: '~/Code/tools/bumbler'
+```
+
+Release new version
+-------------------
+
+`rake bump:[major|minor|patch] && rake release`
+
+
 License
 -------
 
