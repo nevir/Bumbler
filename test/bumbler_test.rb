@@ -16,6 +16,13 @@ describe Bumbler do
     result = sh "bundle exec ruby test.rb"
     result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
   end
+  
+  it "includes gems that are explicitly required" do
+    File.write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true\ngem 'bumbler', path: '#{Bundler.root}'")
+    File.write("test.rb", "require 'bumbler/go'\nBundler.require")
+    result = sh "bundle exec ruby test.rb"
+    result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
+  end
 
   describe "CLI" do
     def bumbler(command="", options={})

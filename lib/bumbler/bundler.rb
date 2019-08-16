@@ -41,6 +41,9 @@ module Bumbler
           @gem_state[spec.name] = {}
           
           Array(spec.autorequire || spec.name).each do |path|
+            # Handle explicitly required gems
+            path = spec.name if path == true
+            
             @require_map[path] = spec.name
             @gem_state[spec.name][path] = false
           end
