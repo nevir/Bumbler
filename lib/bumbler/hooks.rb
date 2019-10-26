@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Bumbler
   module Hooks
     @slow_threshold = 100.0
@@ -6,13 +7,9 @@ module Bumbler
 
     # Everything's a class method (we're a singleton)
     class << self
-      def slow_threshold=(time)
-        @slow_threshold = time
-      end
+      attr_writer :slow_threshold
 
-      def slow_requires
-        @slow_requires
-      end
+      attr_reader :slow_requires
 
       # Inject our custom handling of require into the Kernel.
       def hook_require!
@@ -29,7 +26,7 @@ module Bumbler
             end
           end
 
-          orig_instance_require = self.instance_method(:require)
+          orig_instance_require = instance_method(:require)
           define_method(:require) do |path, *args|
             ::Bumbler::Hooks.handle_require(path) do
               orig_instance_require.bind(self).call(path, *args)
@@ -44,7 +41,7 @@ module Bumbler
       def watch_require!
         ::Kernel.module_eval do
           # It isn't previously defined in Kernel.  This could be a bit dangerous, though.
-          def self.method_added(method_name, *args)
+          def self.method_added(method_name, *_args)
             if method_name == :require && !::Bumbler::Hooks.hooking_require?
               # Fix those hooks.
               ::Bumbler::Hooks.hook_require!
@@ -79,11 +76,11 @@ module Bumbler
       end
 
       def benchmark(key)
-        start = Time.now.to_f
+        start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         result = yield
-        time = (Time.now.to_f - start) * 1000 # ms
+        time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000 # ms
         @slow_requires[key] = time if time > @slow_threshold
-        return time, result
+        [time, result]
       end
     end
   end

@@ -1,29 +1,34 @@
 #!/usr/bin/env ruby
-add_load_path = lambda do
-  path = File.join(File.dirname(__FILE__), '..', 'lib')
-  $LOAD_PATH << path unless $LOAD_PATH.include? path
-end
+# frozen_string_literal: true
 
-add_load_path.call # in case we execute via ./bin
+# in case we execute via ./bin
+add_load_path = -> do
+  local_lib = File.expand_path('../lib', __dir__)
+  $LOAD_PATH << local_lib unless $LOAD_PATH.include? local_lib
+end
+add_load_path.call
 
 require 'optparse'
 require 'bumbler'
 
 options = {}
 OptionParser.new do |parser|
-  parser.banner = <<BANNER
-Bumbler shows how long loading your bundle components take.
+  parser.banner = <<~BANNER
+    Bumbler shows how long loading your bundle components take.
 
-Usage:
-    bumbler
+    Usage:
+        bumbler
 
-Options:
-BANNER
-  parser.on("-t", "--threshold MILISECONDS", Integer, "Threshold in ms to be listed as slow") { |t| options[:threshold] = t }
+    Options:
+  BANNER
+  parser.on("-t", "--threshold MILLISECONDS", Integer, "Threshold in ms to be listed as slow") { |t| options[:threshold] = t }
   parser.on("--initializers", "Show load time of initializers") { options[:initializers] = true }
+  parser.on("--all", "Show all load times") { options[:all] = true }
   parser.on("-h", "--help", "Show this.") { puts parser; exit }
-  parser.on('-v', '--version', 'Show Version'){ puts Bumbler::VERSION; exit}
+  parser.on('-v', '--version', 'Show Version') { puts Bumbler::VERSION; exit }
 end.parse!
+
+abort "Not arguments supported" unless ARGV.empty?
 
 Bumbler::Hooks.slow_threshold = options[:threshold] if options[:threshold]
 
@@ -38,4 +43,8 @@ else
   add_load_path.call # bundler kicks us out
 end
 
-Bumbler::Stats.all_slow_items
+if options[:all]
+  Bumbler::Stats.print_tracked_items
+else
+  Bumbler::Stats.print_slow_items
+end
