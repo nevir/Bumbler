@@ -6,11 +6,26 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.0)
     bump (0.8.0)
+    jaro_winkler (1.5.3)
     maxitest (3.4.0)
       minitest (>= 5.0.0, < 5.13.0)
     minitest (5.12.2)
+    parallel (1.18.0)
+    parser (2.6.5.0)
+      ast (~> 2.4.0)
+    rainbow (3.0.0)
     rake (13.0.0)
+    rubocop (0.75.1)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.6)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    ruby-progressbar (1.10.1)
+    unicode-display_width (1.6.0)
 
 PLATFORMS
   ruby
@@ -20,6 +35,7 @@ DEPENDENCIES
   bump
   maxitest
   rake
+  rubocop
 
 BUNDLED WITH
    1.17.3

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require './lib/bumbler/version'
 
 Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
@@ -10,7 +11,8 @@ Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.license      = "MIT"
   s.required_ruby_version = '>= 2.3.0'
 
-  s.add_development_dependency "rake"
   s.add_development_dependency "bump"
   s.add_development_dependency "maxitest"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rubocop"
 end

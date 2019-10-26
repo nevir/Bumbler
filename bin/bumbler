@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 add_load_path = lambda do
   path = File.join(File.dirname(__FILE__), '..', 'lib')
   $LOAD_PATH << path unless $LOAD_PATH.include? path
@@ -11,18 +12,18 @@ require 'bumbler'
 
 options = {}
 OptionParser.new do |parser|
-  parser.banner = <<BANNER
-Bumbler shows how long loading your bundle components take.
+  parser.banner = <<~BANNER
+    Bumbler shows how long loading your bundle components take.
 
-Usage:
-    bumbler
+    Usage:
+        bumbler
 
-Options:
-BANNER
+    Options:
+  BANNER
   parser.on("-t", "--threshold MILISECONDS", Integer, "Threshold in ms to be listed as slow") { |t| options[:threshold] = t }
   parser.on("--initializers", "Show load time of initializers") { options[:initializers] = true }
   parser.on("-h", "--help", "Show this.") { puts parser; exit }
-  parser.on('-v', '--version', 'Show Version'){ puts Bumbler::VERSION; exit}
+  parser.on('-v', '--version', 'Show Version') { puts Bumbler::VERSION; exit }
 end.parse!
 
 Bumbler::Hooks.slow_threshold = options[:threshold] if options[:threshold]

@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 require_relative "test_helper"
 require "tmpdir"
 
 describe Bumbler do
-  def sh(command, options={})
+  def sh(command, options = {})
     result = Bundler.with_clean_env { `#{command} #{"2>&1" unless options[:keep_output]}` }
     raise "#{options[:fail] ? "SUCCESS" : "FAIL"} #{command}\n#{result}" if $?.success? == !!options[:fail]
     result
@@ -25,7 +26,7 @@ describe Bumbler do
   end
 
   describe "CLI" do
-    def bumbler(command="", options={})
+    def bumbler(command = "", options = {})
       sh("#{Bundler.root}/bin/bumbler #{command}", options)
     end
 
