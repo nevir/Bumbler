@@ -16,7 +16,7 @@ describe Bumbler do
     result = sh "bundle exec ruby test.rb"
     result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
   end
-  
+
   it "includes gems that are explicitly required" do
     File.write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true\ngem 'bumbler', path: '#{Bundler.root}'")
     File.write("test.rb", "require 'bumbler/go'\nBundler.require")
@@ -51,7 +51,7 @@ describe Bumbler do
 
       it "shows more with lower threshold" do
         structure
-        bumbler("-t 0").strip.must_match /^Slow requires:\s+\d+\.\d+\s+fakegem$/m
+        bumbler("-t 0").strip.must_match(/^Slow requires:\s+\d+\.\d+\s+fakegem$/m)
       end
     end
 
