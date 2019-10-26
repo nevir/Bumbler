@@ -78,3 +78,6 @@ Style/Lambda:
 
 Style/RegexpLiteral:
   Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false

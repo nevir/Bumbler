@@ -5,38 +5,34 @@ module Bumbler
     @item_count   = 0
     @loaded_items = 0
 
-    # registry[item_type][item_name] = {:time => 123.45}
-    @registry = Hash.new { |h, k| h[k] = {} }
+    # registry[item_name] = 123.45
+    @registry = {}
 
     class << self
       attr_reader :registry
 
-      def register_item(type, name)
+      def register_item(name)
         # Build a blank key for the item
-        @item_count += 1 unless @registry[type][name]
+        @item_count += 1 unless @registry[name]
 
-        @registry[type][name] = {}
+        @registry[name] = nil
       end
 
-      def item_started(type, name)
-        @curr_item = { type: type, name: name }
+      def item_started(name)
+        @curr_item = { name: name }
 
         render_progress
       end
 
-      def item_finished(type, name, time)
-        @registry[type][name] = { time: time }
+      def item_finished(name, time)
+        @registry[name] = time
 
         @loaded_items += 1
 
-        @prev_item = { type: type, name: name, time: time }
-        @curr_item = nil if @curr_item && @curr_item[:name] == @prev_item[:name] && @curr_item[:type] == @prev_item[:type]
+        @prev_item = { name: name, time: time }
+        @curr_item = nil if @curr_item && @curr_item[:name] == name
 
         render_progress
-      end
-
-      def start!
-        # No-op for now.
       end
 
       def tty_width

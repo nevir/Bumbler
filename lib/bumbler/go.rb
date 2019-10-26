@@ -9,8 +9,6 @@ Bundler.default_gemfile
 Bumbler::Bundler.name
 
 # Kick it off
+Bumbler::Bundler.read_bundler_environment
 Bumbler::Hooks.hook_require!
 Bumbler::Hooks.watch_require!
-
-Bumbler::Bundler.start!
-Bumbler::Progress.start!

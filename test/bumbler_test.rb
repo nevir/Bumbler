@@ -67,7 +67,7 @@ describe Bumbler do
       end
 
       it "can show all" do
-        bumbler("--all").strip.must_match(/^\(0\/1\)\s+fakegem\s+Stats for bundler items:\s+\d+\.\d+\s+fakegem$/m)
+        bumbler("--all").strip.must_match(/^\(0\/1\)\s+fakegem\s+\d+\.\d+\s+fakegem$/m)
       end
 
       it "shows more with lower threshold" do

@@ -3,15 +3,11 @@ module Bumbler
   module Stats
     class << self
       def print_tracked_items
-        Bumbler::Progress.registry.each do |type, items|
-          puts "Stats for #{type} items:"
-
-          items.to_a.sort_by! { |_n, d| d[:time].to_f }.each do |name, info|
-            if info[:time]
-              puts format('  %s  %s', ('%.2f' % info[:time]).rjust(8), name)
-            else
-              puts "  pending:  #{name}"
-            end
+        Bumbler::Progress.registry.sort_by { |_n, time| time.to_f }.each do |name, time|
+          if time
+            puts format('  %s  %s', ('%.2f' % time).rjust(8), name)
+          else
+            puts "  pending:  #{name}"
           end
         end
 

@@ -2,7 +2,7 @@
 module Bumbler
   module Hooks
     @slow_threshold = 100.0
-    @previous_gems = {}
+    @started_items = {}
     @slow_requires = {}
 
     # Everything's a class method (we're a singleton)
@@ -56,21 +56,20 @@ module Bumbler
 
       # Actually do something about a require here.
       def handle_require(path, &block)
-        # break out early if we're already handling this
+        # break out early if we're already handling the path
         return yield if path == @previous_require
         @previous_require = path
 
-        # Shortcut unless we're tracking the gem
-        gem_name = Bumbler::Bundler.gem_for_require(path)
-        return yield unless gem_name
+        # ignore untracked gem
+        return yield unless (gem_name = Bumbler::Bundler.gem_for_require(path))
 
-        # Track load starts
-        Bumbler::Bundler.require_started(path) unless @previous_gems[gem_name]
-        @previous_gems[gem_name] = true
+        # track load starts
+        Bumbler::Bundler.require_started(gem_name) unless @started_items[gem_name]
+        @started_items[gem_name] = true
 
         time, result = benchmark(path, &block)
 
-        Bumbler::Bundler.require_finished(path, time) if result
+        Bumbler::Bundler.require_finished(gem_name, path, time) if result
 
         result
       end
