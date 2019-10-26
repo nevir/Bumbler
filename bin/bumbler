@@ -37,10 +37,13 @@ if options[:initializers]
   add_load_path.call # bundler kicks us out
   require 'bumbler/track_initializers'
   require './config/environment'
-else
+elsif File.exist?('./config/environment')
   require 'bumbler/go'
   require './config/environment'
   add_load_path.call # bundler kicks us out
+else
+  require 'bumbler/go'
+  Bundler.require(*Bundler.definition.groups)
 end
 
 Bumbler::Stats.print_overview

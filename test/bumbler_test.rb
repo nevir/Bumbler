@@ -16,18 +16,20 @@ describe Bumbler do
 
   around { |test| Dir.mktmpdir { |dir| Dir.chdir(dir) { test.call } } }
 
-  it "prints simple progress without tty on ruby project" do
-    write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'\ngem 'bumbler', path: '#{Bundler.root}'")
-    write("test.rb", "require 'bumbler/go'\nBundler.require")
-    result = sh "bundle exec ruby test.rb"
-    result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
-  end
+  describe "bumbler/go" do
+    it "prints simple progress without tty on ruby project" do
+      write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'\ngem 'bumbler', path: '#{Bundler.root}'")
+      write("test.rb", "require 'bumbler/go'\nBundler.require")
+      result = sh "bundle exec ruby test.rb"
+      result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
+    end
 
-  it "includes gems that are explicitly required" do
-    write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true\ngem 'bumbler', path: '#{Bundler.root}'")
-    write("test.rb", "require 'bumbler/go'\nBundler.require")
-    result = sh "bundle exec ruby test.rb"
-    result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
+    it "includes gems that are explicitly required" do
+      write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true\ngem 'bumbler', path: '#{Bundler.root}'")
+      write("test.rb", "require 'bumbler/go'\nBundler.require")
+      result = sh "bundle exec ruby test.rb"
+      result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
+    end
   end
 
   describe "CLI" do
@@ -51,9 +53,22 @@ describe Bumbler do
       bumbler("", fail: true).must_include "Could not locate Gemfile"
     end
 
-    it "fails without config/environment.rb" do
+    it "works with non-rails project" do
       write("Gemfile", "source 'https://rubygems.org'")
-      bumbler("", fail: true).must_include "./config/environment"
+      bumbler("").must_equal "0 of 0 gems required\nSlow requires:\n"
+    end
+
+    it "loads all groups for non-rails project" do
+      write "Gemfile", <<-RUBY
+        source 'https://rubygems.org'
+        gem 'fakegem', path: '#{Bundler.root}/test/fakegem', group: :wut
+      RUBY
+      bumbler("").must_equal "(0/1)  fakegem\n1 of 1 gems required\nSlow requires:\n"
+    end
+
+    it "fails when using initialiers flag on non-rails project" do
+      write("Gemfile", "source 'https://rubygems.org'")
+      bumbler("--initializers", fail: true)
     end
 
     describe "with simple gemfile" do
