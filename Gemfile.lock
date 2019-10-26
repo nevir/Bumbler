@@ -1,0 +1,25 @@
+PATH
+  remote: .
+  specs:
+    bumbler (0.5.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bump (0.8.0)
+    maxitest (3.4.0)
+      minitest (>= 5.0.0, < 5.13.0)
+    minitest (5.12.2)
+    rake (13.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bumbler!
+  bump
+  maxitest
+  rake
+
+BUNDLED WITH
+   1.17.3
