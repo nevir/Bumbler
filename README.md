@@ -82,6 +82,12 @@ the initializers for any engines you rely on.
 bumbler --initializers
 ```
 
+### Show all loaded gems
+
+```bash
+bumbler --all
+```
+
 
 Development
 -----------
