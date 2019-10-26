@@ -69,6 +69,7 @@ module Bumbler
 
         time, result = benchmark(path, &block)
 
+        # TODO: for items with multiple paths we need to add the times
         Bumbler::Bundler.require_finished(gem_name, path, time) if result
 
         result
