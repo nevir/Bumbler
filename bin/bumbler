@@ -48,4 +48,3 @@ if options[:all]
 else
   Bumbler::Stats.print_slow_items
 end
-
