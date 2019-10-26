@@ -76,9 +76,9 @@ module Bumbler
       end
 
       def benchmark(key)
-        start = Time.now.to_f
+        start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         result = yield
-        time = (Time.now.to_f - start) * 1000 # ms
+        time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000 # ms
         @slow_requires[key] = time if time > @slow_threshold
         [time, result]
       end
