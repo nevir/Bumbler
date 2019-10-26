@@ -38,6 +38,10 @@ describe Bumbler do
       bumbler("bumbler --help").must_include "Bumbler"
     end
 
+    it "fails when given arguments" do
+      bumbler("bumbler help", fail: true).must_include "arguments"
+    end
+
     describe "with simple gemfile" do
       def structure
         File.write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'")

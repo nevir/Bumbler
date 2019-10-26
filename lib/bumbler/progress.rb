@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# TODO: replace with ruby-progressbar dependency
 module Bumbler
   module Progress
     @item_count   = 0

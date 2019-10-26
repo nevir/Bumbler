@@ -72,3 +72,6 @@ Layout/FirstMethodParameterLineBreak:
 # https://github.com/rubocop-hq/rubocop/issues/5891
 Style/SpecialGlobalVars:
   Enabled: false
+
+Style/Lambda:
+  EnforcedStyle: literal

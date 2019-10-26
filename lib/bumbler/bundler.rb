@@ -32,22 +32,30 @@ module Bumbler
         read_bundler_environment
       end
 
+      private
+
       def read_bundler_environment
         @require_map = {}
         @gem_state = {}
 
         ::Bundler.environment.current_dependencies.each do |spec|
-          @gem_state[spec.name] = {}
+          gem_name = spec.name
+          @gem_state[gem_name] = {}
 
-          Array(spec.autorequire || spec.name).each do |path|
-            # Handle explicitly required gems
-            path = spec.name if path == true
+          # TODO: this is horrible guess-work ... we need to get the gens load-path instead
+          paths =
+            if !spec.autorequire || spec.autorequire == [true]
+              [gem_name]
+            else
+              spec.autorequire
+            end
 
-            @require_map[path] = spec.name
-            @gem_state[spec.name][path] = false
+          paths.each do |path|
+            @require_map[path] = gem_name
+            @gem_state[gem_name][path] = false
           end
 
-          Bumbler::Progress.register_item(:bundler, spec.name)
+          Bumbler::Progress.register_item(:bundler, gem_name)
         end
       end
     end
