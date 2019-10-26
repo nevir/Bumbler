@@ -63,15 +63,15 @@ describe Bumbler do
       end
 
       it "prints simple progress without tty" do
-        bumbler.strip.must_equal "(0/1)  fakegem\nSlow requires:"
+        bumbler.strip.must_equal "(0/1)  fakegem\n1 of 1 gems required\nSlow requires:"
       end
 
       it "can show all" do
-        bumbler("--all").strip.must_match(/^\(0\/1\)\s+fakegem\s+\d+\.\d+\s+fakegem$/m)
+        bumbler("--all").strip.must_match(/^\(0\/1\)\s+fakegem\s+1 of 1 gems required\s+\d+\.\d+\s+fakegem$/m)
       end
 
       it "shows more with lower threshold" do
-        bumbler("-t 0").strip.must_match(/^Slow requires:\s+\d+\.\d+\s+fakegem$/m)
+        bumbler("-t 0").strip.must_match(/^1 of 1 gems required\s+Slow requires:\s+\d+\.\d+\s+fakegem$/m)
       end
     end
 
@@ -122,6 +122,7 @@ describe Bumbler do
         RUBY
 
         expected = <<-TEXT.gsub(/^          /, "").strip
+          0 of 0 gems required
           Slow requires:
               time  ./config/initializers/foo.rb
               time  ./config/initializers/bar.rb

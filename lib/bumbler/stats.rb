@@ -2,6 +2,11 @@
 module Bumbler
   module Stats
     class << self
+      def print_overview
+        registry = Bumbler::Progress.registry
+        puts "#{registry.count { |_n, time| time }} of #{registry.size} gems required"
+      end
+
       def print_tracked_items
         Bumbler::Progress.registry.sort_by { |_n, time| time.to_f }.each do |name, time|
           if time

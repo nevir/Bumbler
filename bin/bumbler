@@ -43,6 +43,7 @@ else
   add_load_path.call # bundler kicks us out
 end
 
+Bumbler::Stats.print_overview
 if options[:all]
   Bumbler::Stats.print_tracked_items
 else
