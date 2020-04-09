@@ -5,6 +5,12 @@ module Bumbler
     @started_items = {}
     @slow_requires = {}
 
+    module RequireLogger
+      def require(path, *args)
+        ::Bumbler::Hooks.handle_require(path) { super }
+      end
+    end
+
     # Everything's a class method (we're a singleton)
     class << self
       attr_writer :slow_threshold
@@ -16,23 +22,8 @@ module Bumbler
         @hooking_require = true
 
         # There are two independent require methods.  Joy!
-        ::Kernel.module_eval do
-          class << self
-            orig_public_require = Kernel.public_method(:require)
-            define_method(:require) do |path, *args|
-              ::Bumbler::Hooks.handle_require(path) do
-                orig_public_require.call(path, *args)
-              end
-            end
-          end
-
-          orig_instance_require = instance_method(:require)
-          define_method(:require) do |path, *args|
-            ::Bumbler::Hooks.handle_require(path) do
-              orig_instance_require.bind(self).call(path, *args)
-            end
-          end
-        end
+        ::Kernel.prepend RequireLogger
+        (class << ::Kernel; self; end).prepend RequireLogger
 
         @hooking_require = nil
       end
