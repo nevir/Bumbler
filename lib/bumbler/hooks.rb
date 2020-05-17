@@ -5,12 +5,6 @@ module Bumbler
     @started_items = {}
     @slow_requires = {}
 
-    module RequireLogger
-      def require(path, *args)
-        ::Bumbler::Hooks.handle_require(path) { super }
-      end
-    end
-
     # Everything's a class method (we're a singleton)
     class << self
       attr_writer :slow_threshold
@@ -19,13 +13,41 @@ module Bumbler
 
       # Inject our custom handling of require into the Kernel.
       def hook_require!
-        @hooking_require = true
+        hook_instance_require!
+        hook_singleton_require!
+      end
 
-        # There are two independent require methods.  Joy!
-        ::Kernel.prepend RequireLogger
-        (class << ::Kernel; self; end).prepend RequireLogger
+      def hook_instance_require!
+        @hooking_instance_require = true
 
-        @hooking_require = nil
+        ::Kernel.module_eval do
+          orig_instance_require = instance_method(:require)
+          define_method(:require) do |path, *args|
+            ::Bumbler::Hooks.handle_require(path) do
+              orig_instance_require.bind(self).call(path, *args)
+            end
+          end
+          private :require # rubocop:disable Style/AccessModifierDeclarations
+        end
+
+        @hooking_instance_require = nil
+      end
+
+      def hook_singleton_require!
+        @hooking_singleton_require = true
+
+        ::Kernel.module_eval do
+          class << self
+            orig_public_require = Kernel.public_method(:require)
+            define_method(:require) do |path, *args|
+              ::Bumbler::Hooks.handle_require(path) do
+                orig_public_require.call(path, *args)
+              end
+            end
+          end
+        end
+
+        @hooking_singleton_require = nil
       end
 
       # Even better: Other gems hook require as well.  The instance method one at least.
@@ -33,16 +55,25 @@ module Bumbler
         ::Kernel.module_eval do
           # It isn't previously defined in Kernel.  This could be a bit dangerous, though.
           def self.method_added(method_name, *_args)
-            if method_name == :require && !::Bumbler::Hooks.hooking_require?
-              # Fix those hooks.
-              ::Bumbler::Hooks.hook_require!
+            if method_name == :require && !Bumbler::Hooks.hooking_instance_require?
+              ::Bumbler::Hooks.hook_instance_require!
+            end
+          end
+
+          def self.singleton_method_added(method_name, *_args)
+            if method_name == :require && !Bumbler::Hooks.hooking_singleton_require?
+              ::Bumbler::Hooks.hook_singleton_require!
             end
           end
         end
       end
 
-      def hooking_require?
-        @hooking_require
+      def hooking_instance_require?
+        @hooking_instance_require
+      end
+
+      def hooking_singleton_require?
+        @hooking_singleton_require
       end
 
       # Actually do something about a require here.

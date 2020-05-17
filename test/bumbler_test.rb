@@ -3,11 +3,7 @@ require_relative "test_helper"
 require "tmpdir"
 
 describe Bumbler do
-  def sh(command, fail: false, keep_output: false)
-    result = Bundler.with_clean_env { `#{command} #{"2>&1" unless keep_output}` }
-    raise "#{fail ? "SUCCESS" : "FAIL"} #{command}\n#{result}" if $?.success? == fail
-    result
-  end
+  include ShellHelper
 
   def write(path, content)
     FileUtils.mkdir_p(File.dirname(path))
@@ -55,7 +51,7 @@ describe Bumbler do
 
     it "works with non-rails project" do
       write("Gemfile", "source 'https://rubygems.org'")
-      bumbler("").must_equal "0 of 0 gems required\nSlow requires:\n"
+      bumbler("").must_include "0 of 0 gems required\nSlow requires:\n"
     end
 
     it "loads all groups for non-rails project" do
@@ -63,7 +59,7 @@ describe Bumbler do
         source 'https://rubygems.org'
         gem 'fakegem', path: '#{Bundler.root}/test/fakegem', group: :wut
       RUBY
-      bumbler("").must_equal "(0/1)  fakegem\n1 of 1 gems required\nSlow requires:\n"
+      bumbler("").must_include "(0/1)  fakegem\n1 of 1 gems required\nSlow requires:\n"
     end
 
     it "fails when using initialiers flag on non-rails project" do
@@ -136,15 +132,15 @@ describe Bumbler do
           Rails::Initializable::Initializer.new(:bong).run(1,2,3)
         RUBY
 
-        expected = <<-TEXT.gsub(/^          /, "").strip
+        expected = <<~TEXT.strip
           0 of 0 gems required
           Slow requires:
-              time  ./config/initializers/foo.rb
-              time  ./config/initializers/bar.rb
-              time  :baz
-              time  :bong
+              TIME  ./config/initializers/foo.rb
+              TIME  ./config/initializers/bar.rb
+              TIME  :baz
+              TIME  :bong
         TEXT
-        bumbler("--initializers").strip.gsub(/\d+\.\d+/, 'time').must_equal expected
+        bumbler("--initializers").strip.gsub(/\d+\.\d+/, 'TIME').must_equal expected
       end
     end
   end

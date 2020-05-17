@@ -22,7 +22,7 @@ module Bumbler
         @require_map = {}
         @gem_state = {}
 
-        ::Bundler.environment.current_dependencies.each do |spec|
+        ::Bundler.load.current_dependencies.each do |spec|
           gem_name = spec.name
           @gem_state[gem_name] = {}
 
