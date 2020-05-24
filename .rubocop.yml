@@ -1,6 +1,10 @@
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.3 # keep in sync with lowest supported ruby version
+  Exclude:
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'test/integration/fakeapp/**/*'
 
 Style/StringLiterals:
   Enabled: false

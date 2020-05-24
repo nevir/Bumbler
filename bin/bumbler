@@ -37,7 +37,7 @@ if options[:initializers]
   add_load_path.call # bundler kicks us out
   require 'bumbler/track_initializers'
   require './config/environment'
-elsif File.exist?('./config/environment')
+elsif File.exist?('./config/environment.rb')
   require 'bumbler/go'
   require './config/environment'
   add_load_path.call # bundler kicks us out
