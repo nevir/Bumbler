@@ -6,7 +6,7 @@ Find slow loading gems in your [Bundler](http://gembundler.com/)-based projects!
 Bumbler tracks how long the main require of each gem takes,
 for example with `gem 'bar'` it tracks `require 'bar'`. If the gem name and the require name are different,
 add `require:` manually for correct time tracking, for example `gem 'bar-foo', require: 'bar_foo'`.
-This reuquire tracking can sometimes lead to false positives, because of dependencies,
+This require tracking can sometimes lead to false positives, because of dependencies,
 for example `foo` requires `rails` which leads to `foo` being marked as slow.
 
 For rails projects it loads `config/environment.rb`, for all others it runs `Bundler.require *Bundler.groups`.
