@@ -36,7 +36,9 @@ module Bumbler
       end
 
       def tty_width
-        `tput cols`.to_i || 80
+        require 'io/console'
+        # console_winsize: https://github.com/ruby/ruby/blob/f27eb8148f5a72bbacfebfecc7de9305471bb5c9/ext/io/console/console.c#L796
+        IO.console.winsize[1]
       end
 
       def bar(width)
