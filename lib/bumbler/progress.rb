@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 # TODO: replace with ruby-progressbar dependency
+require 'io/console'
+
 module Bumbler
   module Progress
     @item_count   = 0
@@ -36,7 +38,8 @@ module Bumbler
       end
 
       def tty_width
-        `tput cols`.to_i || 80
+        # console_winsize: https://github.com/ruby/ruby/blob/f27eb8148f5a72bbacfebfecc7de9305471bb5c9/ext/io/console/console.c#L796
+        IO.console.winsize[1]
       end
 
       def bar(width)
