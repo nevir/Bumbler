@@ -1,6 +1,7 @@
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.3 # keep in sync with lowest supported ruby version
+  TargetRubyVersion: 2.7 # keep in sync with lowest supported ruby version
+  SuggestExtensions: false
   Exclude:
     - 'vendor/**/*'
     - 'tmp/**/*'
@@ -85,3 +86,7 @@ Style/RegexpLiteral:
 
 Style/IfUnlessModifier:
   Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Exclude:
+  - test/fakegem/fakegem.gemspec

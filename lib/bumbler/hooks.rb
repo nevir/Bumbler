@@ -27,7 +27,7 @@ module Bumbler
               orig_instance_require.bind(self).call(path, *args)
             end
           end
-          private :require # rubocop:disable Style/AccessModifierDeclarations
+          private :require
         end
 
         @hooking_instance_require = nil
@@ -54,13 +54,13 @@ module Bumbler
       def watch_require!
         ::Kernel.module_eval do
           # It isn't previously defined in Kernel.  This could be a bit dangerous, though.
-          def self.method_added(method_name, *_args)
+          def self.method_added(method_name, *_args) # rubocop:disable Lint/MissingSuper
             if method_name == :require && !Bumbler::Hooks.hooking_instance_require?
               ::Bumbler::Hooks.hook_instance_require!
             end
           end
 
-          def self.singleton_method_added(method_name, *_args)
+          def self.singleton_method_added(method_name, *_args) # rubocop:disable Lint/MissingSuper
             if method_name == :require && !Bumbler::Hooks.hooking_singleton_require?
               ::Bumbler::Hooks.hook_singleton_require!
             end

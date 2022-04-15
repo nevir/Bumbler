@@ -9,7 +9,7 @@ Gem::Specification.new 'bumbler', Bumbler::VERSION do |s|
   s.files        = `git ls-files lib bin README.md MIT-LICENSE.md`.split("\n")
   s.executables  = ['bumbler']
   s.license      = "MIT"
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 2.7.0' # keep in sync with test/integration/integration_test.rb
 
   s.add_development_dependency "bump"
   s.add_development_dependency "maxitest"

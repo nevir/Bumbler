@@ -14,14 +14,28 @@ describe Bumbler do
 
   describe "bumbler/go" do
     it "prints simple progress without tty on ruby project" do
-      write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem'\ngem 'bumbler', path: '#{Bundler.root}'")
+      write(
+        "Gemfile",
+        <<~RUBY
+          source 'https://rubygems.org'
+          gem 'fakegem', path: '#{Bundler.root}/test/fakegem'
+          gem 'bumbler', path: '#{Bundler.root}'
+        RUBY
+      )
       write("test.rb", "require 'bumbler/go'\nBundler.require")
       result = sh "bundle exec ruby test.rb"
       result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"
     end
 
     it "includes gems that are explicitly required" do
-      write("Gemfile", "source 'https://rubygems.org'\ngem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true\ngem 'bumbler', path: '#{Bundler.root}'")
+      write(
+        "Gemfile",
+        <<~RUBY
+          source 'https://rubygems.org'
+          gem 'fakegem', path: '#{Bundler.root}/test/fakegem', require: true
+          gem 'bumbler', path: '#{Bundler.root}'
+        RUBY
+      )
       write("test.rb", "require 'bumbler/go'\nBundler.require")
       result = sh "bundle exec ruby test.rb"
       result.strip.must_equal "(0/2)  fakegem\n(1/2)  bumbler"

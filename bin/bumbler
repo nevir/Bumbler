@@ -21,7 +21,9 @@ OptionParser.new do |parser|
 
     Options:
   BANNER
-  parser.on("-t", "--threshold MILLISECONDS", Integer, "Threshold in ms to be listed as slow") { |t| options[:threshold] = t }
+  parser.on("-t", "--threshold MILLISECONDS", Integer, "Threshold in ms to be listed as slow") do |t|
+    options[:threshold] = t
+  end
   parser.on("--initializers", "Show load time of initializers") { options[:initializers] = true }
   parser.on("--all", "Show all load times") { options[:all] = true }
   parser.on("-h", "--help", "Show this.") { puts parser; exit }
